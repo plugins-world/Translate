@@ -78,14 +78,14 @@ abstract class AbstractProvider implements ProviderInterface
      *
      * @return array
      */
-    abstract protected function getRequestParams(array $args): array;
+    abstract protected function getRequestParams(array $args);
 
     /**
      * @param array $params
      *
      * @return string
      */
-    abstract protected function makeSignature(array $params): string;
+    abstract protected function makeSignature(array $params);
 
     /**
      * {@inheritdoc}

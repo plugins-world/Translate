@@ -40,6 +40,7 @@ class TranslateManager implements FactoryInterface
     protected $initialDrivers = [
         'baidu' => 'Baidu',
         'youdao' => 'Youdao',
+        'google' => 'Google',
     ];
 
     protected $defaultDriver;

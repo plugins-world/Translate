@@ -9,9 +9,8 @@
     ],
     "require": {
         "guzzlehttp/guzzle": "^6.3",
-        "adbario/php-dot-notation": "^2.0",
-        "pimple/pimple": "^3.2",
-        "symfony/http-foundation": "^4.1"
+        "symfony/http-foundation": "^4.1",
+        "stichoza/google-translate-php": "^3.2"
     },
     "require-dev": {
         "phpunit/phpunit": "^7.2",
