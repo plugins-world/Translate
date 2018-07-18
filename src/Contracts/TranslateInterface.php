@@ -2,7 +2,23 @@
 
 namespace Yan\Translate\Contracts;
 
+/**
+ * Interface TranslateInterface.
+ */
 interface TranslateInterface
 {
-    public function translate(string $content, $from = null, $to = null);
+    /**
+     * @return string
+     */
+    public function getSrc(): string;
+
+    /**
+     * @return string
+     */
+    public function getDst(): string;
+
+    /**
+     * @return array
+     */
+    public function getOriginal(): array;
 }

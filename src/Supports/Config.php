@@ -1,13 +1,14 @@
 <?php
 
-namespace Yan\Translate\Support;
+namespace Yan\Translate\Supports;
 
 use ArrayAccess;
+use InvalidArgumentException;
 
 /**
  * Class Config.
  */
-class Collection implements ArrayAccess
+class Config implements ArrayAccess
 {
     /**
      * @var array
@@ -19,7 +20,7 @@ class Collection implements ArrayAccess
      *
      * @param array $config
      */
-    public function __construct(array $config = [])
+    public function __construct(array $config)
     {
         $this->config = $config;
     }
@@ -36,13 +37,10 @@ class Collection implements ArrayAccess
     {
         $config = $this->config;
         if (is_null($key)) {
-            return null;
+            return $config;
         }
         if (isset($config[$key])) {
             return $config[$key];
-        }
-        if (false === strpos($key, '.')) {
-            return $default;
         }
         foreach (explode('.', $key) as $segment) {
             if (!is_array($config) || !array_key_exists($segment, $config)) {
@@ -52,6 +50,44 @@ class Collection implements ArrayAccess
         }
 
         return $config;
+    }
+
+    /**
+     * Set an array item to a given value using "dot" notation.
+     *
+     * @param string $key
+     * @param mixed  $value
+     *
+     * @return array
+     */
+    public function set($key, $value)
+    {
+        if (is_null($key)) {
+            throw new InvalidArgumentException('Invalid config key.');
+        }
+        $keys = explode('.', $key);
+        while (count($keys) > 1) {
+            $key = array_shift($keys);
+            if (!isset($this->config[$key]) || !is_array($this->config[$key])) {
+                $this->config[$key] = [];
+            }
+            $this->config = &$this->config[$key];
+        }
+        $this->config[array_shift($keys)] = $value;
+
+        return $this->config;
+    }
+
+    /**
+     * Determine if the given configuration value exists.
+     *
+     * @param string $key
+     *
+     * @return bool
+     */
+    public function has($key)
+    {
+        return (bool) $this->get($key);
     }
 
     /**
@@ -109,9 +145,7 @@ class Collection implements ArrayAccess
      */
     public function offsetSet($offset, $value)
     {
-        if (isset($this->config[$offset])) {
-            $this->config[$offset] = $value;
-        }
+        $this->set($offset, $value);
     }
 
     /**
@@ -127,8 +161,6 @@ class Collection implements ArrayAccess
      */
     public function offsetUnset($offset)
     {
-        if (isset($this->config[$offset])) {
-            unset($this->config[$offset]);
-        }
+        $this->set($offset, null);
     }
 }

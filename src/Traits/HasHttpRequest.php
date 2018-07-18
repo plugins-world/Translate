@@ -10,6 +10,8 @@ use Psr\Http\Message\ResponseInterface;
  */
 trait HasHttpRequest
 {
+    protected $timeout = 5.0;
+
     /**
      * Make a get request.
      *

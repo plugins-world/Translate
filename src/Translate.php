@@ -2,127 +2,35 @@
 
 namespace Yan\Translate;
 
-use Closure;
-use RuntimeException;
 use Yan\Translate\Contracts\TranslateInterface;
-use Yan\Translate\Exceptions\InvalidArgumentException;
-use Yan\Translate\Support\Collection;
+use Yan\Translate\Traits\HasAttributes;
 
-class Translate
+class Translate implements TranslateInterface
 {
-    protected $config;
-
-    protected $defaultDriver;
-
-    protected $customDrivers = [];
-
-    protected $drivers = [];
-
-    public function __construct(array $config = [])
-    {
-        $this->config = new Collection($config);
-
-        if (!empty($config['default'])) {
-            $this->setDefaultDriver($config['default']);
-        }
-    }
-
-    public function translate($content, $from = null, $to = null)
-    {
-        return $this->driver()->translate($content, $from, $to);
-    }
+    use HasAttributes;
 
     /**
-     * @param null $name
+     * User constructor.
      *
-     * @return TranslateInterface
-     *
-     * @throws \Yan\EasyTranslate\Exceptions\InvalidArgumentException
+     * @param array $attributes
      */
-    public function driver($name = null)
+    public function __construct(array $attributes)
     {
-        $name = $name ?: $this->getDefaultDriver();
-
-        if (!isset($this->drivers[$name])) {
-            $this->drivers[$name] = $this->createDriver($name);
-        }
-
-        return $this->drivers[$name];
+        $this->attributes = $attributes;
     }
 
-    public function extend($name, Closure $callback)
+    public function getSrc(): string
     {
-        $this->customDrivers[$name] = $callback;
-
-        return $this;
+        return $this->getAttribute('src');
     }
 
-    public function getConfig()
+    public function getDst(): string
     {
-        return $this->config;
+        return $this->getAttribute('dst');
     }
 
-    public function getDefaultDriver()
+    public function getOriginal(): array
     {
-        if (empty($this->defaultDriver)) {
-            throw new RuntimeException();
-        }
-
-        return $this->defaultDriver;
-    }
-
-    public function setDefaultDriver($name)
-    {
-        $this->defaultDriver = $name;
-
-        return $this;
-    }
-
-    /**
-     * @param string $name
-     *
-     * @return mixed
-     *
-     * @throws \Yan\EasyTranslate\Exceptions\InvalidArgumentException
-     */
-    protected function createDriver(string $name)
-    {
-        if (isset($this->customDrivers[$name])) {
-            $driver = $this->callCustomDriver($name);
-        } else {
-            $className = $this->formatDriverClassName($name);
-            $driver = $this->makeDriver($className, $this->config->get("drivers.{$name}", []));
-        }
-
-        if (!($driver instanceof TranslateInterface)) {
-            throw new InvalidArgumentException(sprintf('Driver "%s" not inherited from %s.', $name, TranslateInterface::class));
-        }
-
-        return $driver;
-    }
-
-    protected function makeDriver($driver, $config)
-    {
-        if (!class_exists($driver)) {
-            throw new InvalidArgumentException(sprintf('Driver "%s" not exists.', $driver));
-        }
-
-        return new $driver($config);
-    }
-
-    protected function formatDriverClassName($name)
-    {
-        if (class_exists($name)) {
-            return $name;
-        }
-
-        $name = ucfirst(str_replace(['-', '_', ''], '', $name));
-
-        return __NAMESPACE__."\\Drivers\\{$name}";
-    }
-
-    protected function callCustomDriver($driver)
-    {
-        return call_user_func($this->customDrivers[$driver], $this->config->get("drivers.{$driver}", []));
+        return $this->getAttribute('original');
     }
 }
