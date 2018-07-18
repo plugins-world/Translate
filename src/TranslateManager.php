@@ -41,6 +41,7 @@ class TranslateManager implements FactoryInterface
         'baidu' => 'Baidu',
         'youdao' => 'Youdao',
         'google' => 'Google',
+        'jinshan' => 'JinShan',
     ];
 
     protected $defaultDriver;
