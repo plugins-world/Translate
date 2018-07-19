@@ -25,8 +25,8 @@ class YoudaoProvider extends AbstractProvider implements ProviderInterface
 
         $params = [
             'q' => $q,
-            'from' => $from ?? 'zh',
-            'to' => $to ?? 'en',
+            'from' => $from ?? 'zh-CHS',
+            'to' => $to ?? 'EN',
             'appKey' => $this->appId,
             'salt' => $salt,
             'ext' => 'mp3',
