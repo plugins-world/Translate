@@ -2,7 +2,6 @@
 
 namespace Yan\Translate\Providers;
 
-use Stichoza\GoogleTranslate\TranslateClient;
 use Yan\Translate\Contracts\ProviderInterface;
 use Yan\Translate\Exceptions\TranslateException;
 use Yan\Translate\Translate;
@@ -25,7 +24,9 @@ class JinShanProvider extends AbstractProvider implements ProviderInterface
         ];
     }
 
-    protected function makeSignature(array $params) {}
+    protected function makeSignature(array $params)
+    {
+    }
 
     /**
      * {@inheritdoc}

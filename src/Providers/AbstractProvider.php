@@ -47,7 +47,6 @@ abstract class AbstractProvider implements ProviderInterface
      */
     protected $appKey;
 
-
     /**
      * AbstractProvider constructor.
      *
@@ -113,7 +112,6 @@ abstract class AbstractProvider implements ProviderInterface
 
         return $this->name;
     }
-
 
     /**
      * @param array  $array

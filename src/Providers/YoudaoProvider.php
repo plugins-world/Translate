@@ -7,11 +7,9 @@ use Yan\Translate\Exceptions\TranslateException;
 use Yan\Translate\Translate;
 
 /**
- * Class YoudaoProvider
+ * Class YoudaoProvider.
  *
  * @see http://ai.youdao.com/docs/doc-trans-api.s#p02
- *
- * @package Yan\Translate\Providers
  */
 class YoudaoProvider extends AbstractProvider implements ProviderInterface
 {

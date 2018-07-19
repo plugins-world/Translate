@@ -17,9 +17,13 @@ class GoogleProvider extends AbstractProvider implements ProviderInterface
         return static::HTTP_URL;
     }
 
-    protected function getRequestParams(array $args) {}
+    protected function getRequestParams(array $args)
+    {
+    }
 
-    protected function makeSignature(array $params) {}
+    protected function makeSignature(array $params)
+    {
+    }
 
     /**
      * {@inheritdoc}
@@ -43,6 +47,7 @@ class GoogleProvider extends AbstractProvider implements ProviderInterface
      * @param string $to
      *
      * @return \Stichoza\GoogleTranslate\TranslateClient
+     *
      * @throws \Exception
      */
     public function getTranslateClient($from, $to)

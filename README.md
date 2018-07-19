@@ -1,3 +1,8 @@
+<h1 align="center">Translate</h1>
+<p align="center">
+<a href="https://travis-ci.org/mouyong/translate"><img src="https://travis-ci.org/mouyong/translate.svg?branch=master" alt="Build Status"></a>
+</p>
+
 # Requirement
 
 ```

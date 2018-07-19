@@ -7,11 +7,9 @@ use Yan\Translate\Exceptions\TranslateException;
 use Yan\Translate\Translate;
 
 /**
- * Class BaiduProvider
+ * Class BaiduProvider.
  *
  * @see http://api.fanyi.baidu.com/api/trans/product/apidoc
- *
- * @package Yan\Translate\Providers
  */
 class BaiduProvider extends AbstractProvider implements ProviderInterface
 {
