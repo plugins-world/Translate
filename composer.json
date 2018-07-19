@@ -8,7 +8,7 @@
         }
     ],
     "require": {
-        "php": "^5.5",
+        "php": ">=5.5",
         "guzzlehttp/guzzle": "^6.3",
         "stichoza/google-translate-php": "^3.2"
     },
