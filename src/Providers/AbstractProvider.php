@@ -2,7 +2,6 @@
 
 namespace Yan\Translate\Providers;
 
-use Symfony\Component\HttpFoundation\Request;
 use Yan\Translate\Contracts\ProviderInterface;
 use Yan\Translate\Supports\Config;
 use Yan\Translate\Traits\HasHttpRequest;
@@ -27,13 +26,6 @@ abstract class AbstractProvider implements ProviderInterface
     protected $config;
 
     /**
-     * The HTTP request instance.
-     *
-     * @var \Symfony\Component\HttpFoundation\Request
-     */
-    protected $request;
-
-    /**
      * The app id.
      *
      * @var string
@@ -50,12 +42,11 @@ abstract class AbstractProvider implements ProviderInterface
     /**
      * AbstractProvider constructor.
      *
-     * @param \Symfony\Component\HttpFoundation\Request $request
      * @param string                                    $app_id
      * @param string                                    $app_key
      * @param array                                     $config
      */
-    public function __construct(Request $request, $app_id, $app_key, array $config)
+    public function __construct($app_id, $app_key, array $config)
     {
         $this->appId = $app_id;
         $this->appKey = $app_key;

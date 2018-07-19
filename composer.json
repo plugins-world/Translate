@@ -9,7 +9,6 @@
     ],
     "require": {
         "guzzlehttp/guzzle": "^6.3",
-        "symfony/http-foundation": "^4.1",
         "stichoza/google-translate-php": "^3.2"
     },
     "require-dev": {

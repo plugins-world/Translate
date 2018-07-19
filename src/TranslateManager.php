@@ -4,7 +4,6 @@ namespace Yan\Translate;
 
 use Closure;
 use InvalidArgumentException;
-use Symfony\Component\HttpFoundation\Request;
 use Yan\Translate\Contracts\FactoryInterface;
 use Yan\Translate\Contracts\ProviderInterface;
 use Yan\Translate\Supports\Config;
@@ -17,13 +16,6 @@ class TranslateManager implements FactoryInterface
      * @var Config
      */
     protected $config;
-
-    /**
-     * The request instance.
-     *
-     * @var Request
-     */
-    protected $request;
 
     /**
      * The registered custom driver creators.
@@ -57,18 +49,13 @@ class TranslateManager implements FactoryInterface
      * TranslateManager constructor.
      *
      * @param array        $config
-     * @param Request|null $request
      */
-    public function __construct(array $config, Request $request = null)
+    public function __construct(array $config)
     {
         $this->config = new Config($config);
 
         if (!empty($config['default'])) {
             $this->setDefaultDriver($config['default']);
-        }
-
-        if ($request) {
-            $this->setRequest($request);
         }
     }
 
@@ -121,26 +108,6 @@ class TranslateManager implements FactoryInterface
     }
 
     /**
-     * @param \Symfony\Component\HttpFoundation\Request $request
-     *
-     * @return $this
-     */
-    public function setRequest(Request $request)
-    {
-        $this->request = $request;
-
-        return $this;
-    }
-
-    /**
-     * @return \Symfony\Component\HttpFoundation\Request
-     */
-    public function getRequest()
-    {
-        return $this->request ?: $this->createDefaultRequest();
-    }
-
-    /**
      * Create a new driver instance.
      *
      * @param string $driver
@@ -175,18 +142,6 @@ class TranslateManager implements FactoryInterface
     protected function callCustomCreator($driver)
     {
         return $this->customCreators[$driver]($this->config);
-    }
-
-    /**
-     * Create default request instance.
-     *
-     * @return Request
-     */
-    protected function createDefaultRequest()
-    {
-        $request = Request::createFromGlobals();
-
-        return $request;
     }
 
     /**
@@ -225,7 +180,6 @@ class TranslateManager implements FactoryInterface
     public function buildProvider($provider, $config)
     {
         return new $provider(
-            $this->getRequest(),
             $config['app_id'],
             $config['app_key'],
             $config
