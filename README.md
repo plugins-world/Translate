@@ -27,6 +27,12 @@ $config = [
     'default' => 'google',
 
     'drivers' => [
+        // 留空
+        'google' => [
+            'app_id' => '',
+            'app_key' => '',
+        ],
+        
         'baidu' => [
             'ssl' => true,
             'app_id' => 'your-baidu-app_id',
@@ -40,12 +46,6 @@ $config = [
         ],
 
         // 留空
-        'google' => [
-            'app_id' => '',
-            'app_key' => '',
-        ],
-
-        // 留空
         'jinshan' => [
             'app_id' => '',
             'app_key' => '',
@@ -55,7 +55,14 @@ $config = [
 
 $socialite = new TranslateManager($config);
 
+$result = $socialite->driver()->translate('测试', 'zh', 'en');
+$result = $socialite->driver('google')->translate('测试', 'zh', 'en');
 $result = $socialite->driver('baidu')->translate('测试', 'zh', 'en');
+$result = $socialite->driver('youdao')->translate('测试', 'zh', 'en');
+$result = $socialite->driver('jinshan')->translate('测试', 'zh', 'en');
 
 var_dump($result);
+var_dump($result->getSrc());
+var_dump($result->getDst());
+var_dump($result->getOriginal());
 ```
