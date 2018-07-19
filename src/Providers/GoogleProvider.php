@@ -17,14 +17,6 @@ class GoogleProvider extends AbstractProvider implements ProviderInterface
         return static::HTTP_URL;
     }
 
-    protected function getRequestParams(array $args)
-    {
-    }
-
-    protected function makeSignature(array $params)
-    {
-    }
-
     /**
      * {@inheritdoc}
      */

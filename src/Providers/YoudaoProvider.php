@@ -17,16 +17,14 @@ class YoudaoProvider extends AbstractProvider implements ProviderInterface
 
     const HTTPS_URL = 'https://openapi.youdao.com/api';
 
-    protected function getRequestParams(array $args)
+    protected function getRequestParams($q, $from = 'zh-CHS', $to = 'EN')
     {
-        list($q, $from, $to) = $args;
-
         $salt = time();
 
         $params = [
             'q' => $q,
-            'from' => $from ?? 'zh-CHS',
-            'to' => $to ?? 'EN',
+            'from' => $from,
+            'to' => $to,
             'appKey' => $this->appId,
             'salt' => $salt,
             'ext' => 'mp3',
@@ -48,7 +46,7 @@ class YoudaoProvider extends AbstractProvider implements ProviderInterface
      */
     public function translate($q, $from = 'zh-CHS', $to = 'EN')
     {
-        $response = $this->post($this->getTranslateUrl(), $this->getRequestParams(func_get_args()));
+        $response = $this->post($this->getTranslateUrl(), $this->getRequestParams($q, $from, $to));
 
         if ('0' != $response['errorCode']) {
             throw new TranslateException("请求接口错误，错误码：{$response['errorCode']}", $response['errorCode']);

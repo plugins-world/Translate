@@ -17,10 +17,8 @@ class BaiduProvider extends AbstractProvider implements ProviderInterface
 
     const HTTPS_URL = 'https://fanyi-api.baidu.com/api/trans/vip/translate';
 
-    protected function getRequestParams(array $args)
+    protected function getRequestParams($q, $from = 'zh', $to = 'en')
     {
-        list($q, $from, $to) = $args;
-
         $salt = time();
 
         $params = [
@@ -46,7 +44,7 @@ class BaiduProvider extends AbstractProvider implements ProviderInterface
      */
     public function translate($q, $from = 'zh', $to = 'en')
     {
-        $response = $this->post($this->getTranslateUrl(), $this->getRequestParams(func_get_args()));
+        $response = $this->post($this->getTranslateUrl(), $this->getRequestParams($q, $from, $to));
 
         if (!empty($response['error_code'])) {
             throw new TranslateException($response['error_msg'], $response['error_code']);

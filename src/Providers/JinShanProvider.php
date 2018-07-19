@@ -15,17 +15,9 @@ class JinShanProvider extends AbstractProvider implements ProviderInterface
         return static::HTTP_URL;
     }
 
-    protected function getRequestParams(array $args)
+    protected function getRequestParams($w, $f, $t)
     {
-        return [
-            'f' => $args['from'],
-            't' => $args['to'],
-            'w' => $args['q'],
-        ];
-    }
-
-    protected function makeSignature(array $params)
-    {
+        return compact('w', 'f', 't');
     }
 
     /**
@@ -33,11 +25,11 @@ class JinShanProvider extends AbstractProvider implements ProviderInterface
      */
     public function translate($q, $from = 'auto', $to = 'auto')
     {
-        $response = $this->post($this->getTranslateUrl(), $this->getRequestParams(compact('q', 'from', 'to')));
+        $response = $this->post($this->getTranslateUrl(), $this->getRequestParams($q, $from, $to));
 
         $response = json_decode($response, true);
 
-        if ($response['content']['error_code']) {
+        if (!empty($response['content']['error_code'])) {
             throw new TranslateException($response['content']['message'], $response['content']['error_code']);
         }
 

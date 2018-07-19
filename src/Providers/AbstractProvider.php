@@ -42,9 +42,9 @@ abstract class AbstractProvider implements ProviderInterface
     /**
      * AbstractProvider constructor.
      *
-     * @param string                                    $app_id
-     * @param string                                    $app_key
-     * @param array                                     $config
+     * @param string $app_id
+     * @param string $app_key
+     * @param array  $config
      */
     public function __construct($app_id, $app_key, array $config)
     {
@@ -63,20 +63,6 @@ abstract class AbstractProvider implements ProviderInterface
     {
         return $this->config->get('ssl', false) ? static::HTTPS_URL : static::HTTP_URL;
     }
-
-    /**
-     * @param array $args
-     *
-     * @return array
-     */
-    abstract protected function getRequestParams(array $args);
-
-    /**
-     * @param array $params
-     *
-     * @return string
-     */
-    abstract protected function makeSignature(array $params);
 
     /**
      * {@inheritdoc}
