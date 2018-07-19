@@ -7,7 +7,7 @@ PHP >= 7.0
 # Installation
 
 ```shell
-$ composer require "yan/translate" -vvv
+$ composer require "mouyong/translate" -vvv
 ```
 
 # Usage
