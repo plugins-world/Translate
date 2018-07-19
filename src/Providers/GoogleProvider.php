@@ -4,7 +4,6 @@ namespace Yan\Translate\Providers;
 
 use Stichoza\GoogleTranslate\TranslateClient;
 use Yan\Translate\Contracts\ProviderInterface;
-use Yan\Translate\Exceptions\TranslateException;
 use Yan\Translate\Translate;
 
 class GoogleProvider extends AbstractProvider implements ProviderInterface
@@ -13,7 +12,7 @@ class GoogleProvider extends AbstractProvider implements ProviderInterface
 
     protected $translateClient;
 
-    protected function getTranslateUrl(): string
+    protected function getTranslateUrl()
     {
         return static::HTTP_URL;
     }
@@ -25,12 +24,9 @@ class GoogleProvider extends AbstractProvider implements ProviderInterface
     /**
      * {@inheritdoc}
      */
-    public function translate(string $q, $from = 'zh-CN', $to = 'en')
+    public function translate($q, $from = 'zh-CN', $to = 'en')
     {
-        $translateClient = new TranslateClient();
-        $translateClient->setSource('zh-CN');
-        $translateClient->setTarget('en');
-        $translateClient->setUrlBase($this->getTranslateUrl());
+        $translateClient = $this->getTranslateClient($from, $to);
 
         $response = $translateClient->translate($q);
         $rawResponse = $translateClient->getResponse($q);
@@ -42,7 +38,23 @@ class GoogleProvider extends AbstractProvider implements ProviderInterface
         ]));
     }
 
-    protected function mapTranslateResult(array $translateResult): array
+    /**
+     * @param string $from
+     * @param string $to
+     *
+     * @return \Stichoza\GoogleTranslate\TranslateClient
+     * @throws \Exception
+     */
+    public function getTranslateClient($from, $to)
+    {
+        $translateClient = new TranslateClient();
+
+        return $translateClient->setSource($from)
+                               ->setTarget($to)
+                               ->setUrlBase($this->getTranslateUrl());
+    }
+
+    protected function mapTranslateResult(array $translateResult)
     {
         return [
             'src' => $translateResult['src'],

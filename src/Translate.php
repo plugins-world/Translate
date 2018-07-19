@@ -19,17 +19,17 @@ class Translate implements TranslateInterface
         $this->attributes = $attributes;
     }
 
-    public function getSrc(): string
+    public function getSrc()
     {
         return $this->getAttribute('src');
     }
 
-    public function getDst(): string
+    public function getDst()
     {
         return $this->getAttribute('dst');
     }
 
-    public function getOriginal(): array
+    public function getOriginal()
     {
         return $this->getAttribute('original');
     }

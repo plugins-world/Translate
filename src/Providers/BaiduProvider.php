@@ -6,21 +6,28 @@ use Yan\Translate\Contracts\ProviderInterface;
 use Yan\Translate\Exceptions\TranslateException;
 use Yan\Translate\Translate;
 
+/**
+ * Class BaiduProvider
+ *
+ * @see http://api.fanyi.baidu.com/api/trans/product/apidoc
+ *
+ * @package Yan\Translate\Providers
+ */
 class BaiduProvider extends AbstractProvider implements ProviderInterface
 {
     const HTTP_URL = 'http://api.fanyi.baidu.com/api/trans/vip/translate';
 
     const HTTPS_URL = 'https://fanyi-api.baidu.com/api/trans/vip/translate';
 
-    protected function getRequestParams(array $args): array
+    protected function getRequestParams(array $args)
     {
         list($q, $from, $to) = $args;
 
         $salt = time();
 
         $params = [
-            'from' => $from ?? 'zh',
-            'to' => $to ?? 'en',
+            'from' => $from ?: 'zh',
+            'to' => $to ?: 'en',
             'appid' => $this->appId,
             'q' => $q,
             'salt' => $salt,
@@ -31,7 +38,7 @@ class BaiduProvider extends AbstractProvider implements ProviderInterface
         return $params;
     }
 
-    protected function makeSignature(array $params): string
+    protected function makeSignature(array $params)
     {
         return md5($this->appId.$params['q'].$params['salt'].$this->appKey);
     }
@@ -39,7 +46,7 @@ class BaiduProvider extends AbstractProvider implements ProviderInterface
     /**
      * {@inheritdoc}
      */
-    public function translate(string $q, $from = 'zh', $to = 'en')
+    public function translate($q, $from = 'zh', $to = 'en')
     {
         $response = $this->post($this->getTranslateUrl(), $this->getRequestParams(func_get_args()));
 
@@ -50,7 +57,7 @@ class BaiduProvider extends AbstractProvider implements ProviderInterface
         return new Translate($this->mapTranslateResult($response));
     }
 
-    protected function mapTranslateResult(array $translateResult): array
+    protected function mapTranslateResult(array $translateResult)
     {
         return [
             'src' => reset($translateResult['trans_result'])['src'],

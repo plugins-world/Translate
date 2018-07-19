@@ -47,12 +47,13 @@ abstract class AbstractProvider implements ProviderInterface
      */
     protected $appKey;
 
+
     /**
      * AbstractProvider constructor.
      *
      * @param \Symfony\Component\HttpFoundation\Request $request
-     * @param                                           $app_id
-     * @param                                           $app_key
+     * @param string                                    $app_id
+     * @param string                                    $app_key
      * @param array                                     $config
      */
     public function __construct(Request $request, $app_id, $app_key, array $config)
@@ -68,7 +69,7 @@ abstract class AbstractProvider implements ProviderInterface
      *
      * @return string
      */
-    protected function getTranslateUrl(): string
+    protected function getTranslateUrl()
     {
         return $this->config->get('ssl', false) ? static::HTTPS_URL : static::HTTP_URL;
     }
@@ -90,14 +91,14 @@ abstract class AbstractProvider implements ProviderInterface
     /**
      * {@inheritdoc}
      */
-    abstract public function translate(string $string, $from = 'zh', $to = 'en');
+    abstract public function translate($string, $from = 'zh', $to = 'en');
 
     /**
      * @param array $translateResult
      *
      * @return array
      */
-    abstract protected function mapTranslateResult(array $translateResult): array;
+    abstract protected function mapTranslateResult(array $translateResult);
 
     /**
      * @return string
@@ -113,14 +114,13 @@ abstract class AbstractProvider implements ProviderInterface
         return $this->name;
     }
 
+
     /**
-     * Return array item by key.
-     *
      * @param array  $array
      * @param string $key
-     * @param mixed  $default
+     * @param null   $default
      *
-     * @return mixed
+     * @return array|mixed|null
      */
     protected function arrayItem(array $array, $key, $default = null)
     {

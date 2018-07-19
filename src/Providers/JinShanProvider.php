@@ -11,7 +11,7 @@ class JinShanProvider extends AbstractProvider implements ProviderInterface
 {
     const HTTP_URL = 'http://fy.iciba.com/ajax.php?a=fy';
 
-    protected function getTranslateUrl(): string
+    protected function getTranslateUrl()
     {
         return static::HTTP_URL;
     }
@@ -30,7 +30,7 @@ class JinShanProvider extends AbstractProvider implements ProviderInterface
     /**
      * {@inheritdoc}
      */
-    public function translate(string $q, $from = 'auto', $to = 'auto')
+    public function translate($q, $from = 'auto', $to = 'auto')
     {
         $response = $this->post($this->getTranslateUrl(), $this->getRequestParams(compact('q', 'from', 'to')));
 
@@ -47,7 +47,7 @@ class JinShanProvider extends AbstractProvider implements ProviderInterface
         ]));
     }
 
-    protected function mapTranslateResult(array $translateResult): array
+    protected function mapTranslateResult(array $translateResult)
     {
         return [
             'src' => $translateResult['src'],
