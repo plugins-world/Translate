@@ -53,13 +53,13 @@ $config = [
     ],
 ];
 
-$socialite = new TranslateManager($config);
+$translate = new TranslateManager($config);
 
-$result = $socialite->driver()->translate('测试', 'zh', 'en');
-$result = $socialite->driver('google')->translate('测试', 'zh', 'en');
-$result = $socialite->driver('baidu')->translate('测试', 'zh', 'en');
-$result = $socialite->driver('youdao')->translate('测试', 'zh', 'en');
-$result = $socialite->driver('jinshan')->translate('测试', 'zh', 'en');
+$result = $translate->driver()->translate('测试', 'zh', 'en');
+$result = $translate->driver('google')->translate('测试', 'zh', 'en');
+$result = $translate->driver('baidu')->translate('测试', 'zh', 'en');
+$result = $translate->driver('youdao')->translate('测试', 'zh', 'en');
+$result = $translate->driver('jinshan')->translate('测试', 'zh', 'en');
 
 var_dump($result);
 var_dump($result->getSrc());
