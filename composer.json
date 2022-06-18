@@ -1,7 +1,7 @@
 {
     "name": "mouyong/translate",
     "description": "An extension package that supports multi platform translation, such as Baidu translation, Google translation, Jinshan translation and Youdao translation",
-    "keywords": ["translate", "baidu", "google", "jinshan", "youdao"],
+    "keywords": ["translate", "content recognizer", "language recognizer", "baidu", "google", "jinshan", "youdao"],
     "type": "library",
     "license": "MIT",
     "authors": [

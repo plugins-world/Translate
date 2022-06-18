@@ -1,4 +1,4 @@
-Translate
+Translate content and recognizer content language
 ---
 
 [![Build Status](https://api.travis-ci.com/mouyong/translate.svg?branch=master)](https://travis-ci.com/mouyong/translate) [![Latest Stable Version](http://poser.pugx.org/mouyong/translate/v)](https://packagist.org/packages/mouyong/translate) [![Total Downloads](http://poser.pugx.org/mouyong/translate/downloads)](https://packagist.org/packages/mouyong/translate) [![Latest Unstable Version](http://poser.pugx.org/mouyong/translate/v/unstable)](https://packagist.org/packages/mouyong/translate) [![License](http://poser.pugx.org/mouyong/translate/license)](https://packagist.org/packages/mouyong/translate) [![PHP Version Require](http://poser.pugx.org/mouyong/translate/require/php)](https://packagist.org/packages/mouyong/translate)
@@ -60,16 +60,22 @@ $config = [
     ],
 ];
 
-$translate = new TranslateManager($config);
+
+// 翻译
+$translate = new \MouYong\Translate\TranslateManager($config);
 
 $result = $translate->driver()->translate('测试', 'zh', 'en');
-$result = $translate->driver('google')->translate('测试', 'zh', 'en');
 $result = $translate->driver('baidu')->translate('测试', 'zh', 'en');
-$result = $translate->driver('youdao')->translate('测试', 'zh', 'en');
 $result = $translate->driver('jinshan')->translate('测试', 'zh', 'en');
+$result = $translate->driver('youdao')->translate('测试', 'zh', 'en');
+$result = $translate->driver('google')->translate('测试', 'zh', 'en');
 
 var_dump($result);
-var_dump($result->getSrc());
-var_dump($result->getDst());
-var_dump($result->getOriginal());
+
+
+// 文本内容探测：检测用户输入的内容是哪个国家的语言
+$languageRecognizerClient = new \MouYong\Translate\Clients\LanguageRecognizerClient();
+
+$languageRecognizer = $languageRecognizerClient->detect("Словѣ́ньскъ/ⰔⰎⰑⰂⰡⰐⰠⰔⰍⰟ");
+var_dump($languageRecognizer->getData());
 ```
