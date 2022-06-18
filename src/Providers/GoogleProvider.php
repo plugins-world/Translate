@@ -1,10 +1,11 @@
 <?php
 
-namespace Yan\Translate\Providers;
+namespace MouYong\Translate\Providers;
 
-use Stichoza\GoogleTranslate\TranslateClient;
-use Yan\Translate\Contracts\ProviderInterface;
-use Yan\Translate\Translate;
+use MouYong\Translate\Translate;
+use MouYong\Translate\Contracts\ProviderInterface;
+use MouYong\Translate\Clients\GoogleTranslateClient;
+use MouYong\Translate\Exceptions\TranslateException;
 
 class GoogleProvider extends AbstractProvider implements ProviderInterface
 {
@@ -17,14 +18,16 @@ class GoogleProvider extends AbstractProvider implements ProviderInterface
         return static::HTTP_URL;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function translate($q, $from = 'zh-CN', $to = 'en')
+    public function translate(string $q, $from = 'zh-CN', $to = 'en')
     {
         $translateClient = $this->getTranslateClient($from, $to);
 
-        $response = $translateClient->translate($q);
+        try {
+            $response = $translateClient->translate($q);
+        } catch (\Throwable $e) {
+            throw new TranslateException("请求接口错误，错误信息：{$e->getMessage()}", $e->getCode());
+        }
+
         $rawResponse = $translateClient->getResponse($q);
 
         return new Translate($this->mapTranslateResult([
@@ -38,17 +41,18 @@ class GoogleProvider extends AbstractProvider implements ProviderInterface
      * @param string $from
      * @param string $to
      *
-     * @return \Stichoza\GoogleTranslate\TranslateClient
+     * @return \Stichoza\GoogleTranslate\GoogleTranslate
      *
      * @throws \Exception
      */
     public function getTranslateClient($from, $to)
     {
-        $translateClient = new TranslateClient();
+        $translateClient = new GoogleTranslateClient($this->config);
 
-        return $translateClient->setSource($from)
-                               ->setTarget($to)
-                               ->setUrlBase($this->getTranslateUrl());
+        return $translateClient
+            ->setSource($from)
+            ->setTarget($to)
+            ->setUrl($this->getTranslateUrl());
     }
 
     protected function mapTranslateResult(array $translateResult)

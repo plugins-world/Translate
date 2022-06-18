@@ -1,23 +1,37 @@
 <?php
 
-namespace Yan\Translate\Providers;
+namespace MouYong\Translate\Providers;
 
-use Yan\Translate\Contracts\ProviderInterface;
-use Yan\Translate\Exceptions\TranslateException;
-use Yan\Translate\Translate;
+use ArrayAccess;
+use MouYong\Translate\Contracts\ProviderInterface;
+use MouYong\Translate\Exceptions\TranslateException;
+use MouYong\Translate\Translate;
+use ZhenMu\Support\Traits\Clientable;
+use ZhenMu\Support\Traits\DefaultClient;
 
-class JinShanProvider extends AbstractProvider implements ProviderInterface
+class JinShanProvider extends AbstractProvider implements ProviderInterface, ArrayAccess
 {
+    use Clientable {
+        Clientable::getOptions as getDefaultOptions;
+    }
+    use DefaultClient;
+
     const HTTP_URL = 'https://ifanyi.iciba.com/index.php';
 
-    protected function getTranslateUrl()
-    {
-        return static::HTTP_URL;
-    }
+    const HTTPS_URL = 'https://ifanyi.iciba.com/index.php';
 
     protected function getRequestParams($q, $from, $to)
     {
-        return compact('q', 'from', 'to');
+        return compact('from', 'to', 'q');
+    }
+
+    public function getOptions()
+    {
+        $options = array_merge($this->getDefaultOptions(), [
+            'Content-Type' => 'application/x-www-form-urlencoded',
+        ]);
+
+        return $options;
     }
 
     protected function getRequestQuery($q)
@@ -28,33 +42,28 @@ class JinShanProvider extends AbstractProvider implements ProviderInterface
             'client'    => '6',
             'auth_user' => 'key_ciba',
         ];
-        $data['sign'] = substr(bin2hex(md5(sprintf("%s%sifanyicjbysdlove1%s", $data['client'],
-            $data['auth_user'], $q), true)), 0, 16);
 
-        return http_build_query($data);
+        $data['sign'] = substr(bin2hex(md5(sprintf(
+            "%s%sifanyicjbysdlove1%s",
+            $data['client'],
+            $data['auth_user'],
+            $q
+        ), true)), 0, 16);
+
+        return $data;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function translate($q, $from = 'auto', $to = 'auto')
+    public function translate(string $q, $from = 'auto', $to = 'auto')
     {
-        $response = $this->post(
-            $this->getTranslateUrl().'?'.$this->getRequestQuery($q), $this->getRequestParams($q, $from, $to),
-            [
-                'Content-Type' => 'application/x-www-form-urlencoded',
-            ]);
-
-        $response = json_decode($response, true);
-
-        if (!empty($response['content']['error_code'])) {
-            throw new TranslateException($response['content']['message'], $response['content']['error_code']);
-        }
+        $response = $this->post($this->getTranslateUrl(), [
+            'query' => $this->getRequestQuery($q),
+            'form_params' => $this->getRequestParams($q, $from, $to),
+        ]);
 
         return new Translate($this->mapTranslateResult([
             'src' => $q,
             'dst' => $response['content']['out'],
-            'original' => $response,
+            'original' => $response->toArray(),
         ]));
     }
 
@@ -65,5 +74,15 @@ class JinShanProvider extends AbstractProvider implements ProviderInterface
             'dst' => $translateResult['dst'],
             'original' => $translateResult['original'],
         ];
+    }
+
+    public function isErrorResponse(array $data): bool
+    {
+        return !empty($data['content']['error_code']);
+    }
+
+    public function handleErrorResponse(?string $content = null, array $data = [])
+    {
+        throw new TranslateException("请求接口错误，错误信息：{$data['content']['message']}", $data['content']['error_code']);
     }
 }

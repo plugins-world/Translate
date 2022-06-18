@@ -1,18 +1,24 @@
 <?php
 
-namespace Yan\Translate\Providers;
+namespace MouYong\Translate\Providers;
 
-use Yan\Translate\Contracts\ProviderInterface;
-use Yan\Translate\Exceptions\TranslateException;
-use Yan\Translate\Translate;
+use ArrayAccess;
+use MouYong\Translate\Translate;
+use ZhenMu\Support\Traits\Clientable;
+use ZhenMu\Support\Traits\DefaultClient;
+use MouYong\Translate\Contracts\ProviderInterface;
+use MouYong\Translate\Exceptions\TranslateException;
 
 /**
  * Class BaiduProvider.
  *
  * @see http://api.fanyi.baidu.com/api/trans/product/apidoc
  */
-class BaiduProvider extends AbstractProvider implements ProviderInterface
+class BaiduProvider extends AbstractProvider implements ProviderInterface, ArrayAccess
 {
+    use Clientable;
+    use DefaultClient;
+
     const HTTP_URL = 'http://api.fanyi.baidu.com/api/trans/vip/translate';
 
     const HTTPS_URL = 'https://fanyi-api.baidu.com/api/trans/vip/translate';
@@ -22,12 +28,16 @@ class BaiduProvider extends AbstractProvider implements ProviderInterface
         $salt = time();
 
         $params = [
+            'q' => $q,
             'from' => $from ?: 'zh',
             'to' => $to ?: 'en',
             'appid' => $this->appId,
-            'q' => $q,
             'salt' => $salt,
+            'tts' => $this->config['tts'] ?? 1,
+            'dict' => $this->config['dict'] ?? 1,
+            'action' => $this->config['action'] ?? 0,
         ];
+
 
         $params['sign'] = $this->makeSignature($params);
 
@@ -40,17 +50,21 @@ class BaiduProvider extends AbstractProvider implements ProviderInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @param  string $q
+     * @param  string $from
+     * @param  string $to
+     * 
+     * @return Translate
+     * 
+     * @see https://fanyi-api.baidu.com/api/trans/vip/translate
      */
-    public function translate($q, $from = 'zh', $to = 'en')
+    public function translate(string $q, $from = 'zh', $to = 'en')
     {
-        $response = $this->post($this->getTranslateUrl(), $this->getRequestParams($q, $from, $to));
+        $response = $this->post($this->getTranslateUrl(), [
+            'form_params' => $this->getRequestParams($q, $from, $to),
+        ]);
 
-        if (!empty($response['error_code'])) {
-            throw new TranslateException($response['error_msg'], $response['error_code']);
-        }
-
-        return new Translate($this->mapTranslateResult($response));
+        return new Translate($this->mapTranslateResult($response->toArray()));
     }
 
     protected function mapTranslateResult(array $translateResult)
@@ -60,5 +74,15 @@ class BaiduProvider extends AbstractProvider implements ProviderInterface
             'dst' => reset($translateResult['trans_result'])['dst'],
             'original' => $translateResult,
         ];
+    }
+
+    public function isErrorResponse(array $data): bool
+    {
+        return !empty($data['error_code']);
+    }
+
+    public function handleErrorResponse(?string $content = null, array $data = [])
+    {
+        throw new TranslateException("请求接口错误，错误信息：{$data['error_msg']}", $data['content']['error_code']);
     }
 }

@@ -1,14 +1,13 @@
 <?php
 
-namespace Yan\Translate;
+namespace MouYong\Translate;
 
 use Closure;
 use InvalidArgumentException;
-use Yan\Translate\Contracts\FactoryInterface;
-use Yan\Translate\Contracts\ProviderInterface;
-use Yan\Translate\Supports\Config;
+use MouYong\Translate\Supports\Config;
+use MouYong\Translate\Contracts\ProviderInterface;
 
-class TranslateManager implements FactoryInterface
+class TranslateManager
 {
     /**
      * The configuration.
@@ -122,7 +121,9 @@ class TranslateManager implements FactoryInterface
             $provider = $this->initialDrivers[$driver];
             $provider = __NAMESPACE__.'\\Providers\\'.$provider.'Provider';
 
-            return $this->buildProvider($provider, $this->formatConfig($this->config->get("drivers.{$driver}")));
+            return $this->buildProvider($provider, $this->formatConfig(
+                $this->config["drivers.{$driver}"]
+            ));
         }
 
         if (isset($this->customCreators[$driver])) {
@@ -177,27 +178,28 @@ class TranslateManager implements FactoryInterface
      *
      * @return ProviderInterface
      */
-    public function buildProvider($provider, $config)
+    public function buildProvider($provider, array $config = [])
     {
         return new $provider(
-            $config['app_id'],
-            $config['app_key'],
-            $config
+            $config['app_id'] ?? null,
+            $config['app_key'] ?? null,
+            $config,
         );
     }
 
     /**
      * Format the server configuration.
      *
-     * @param array $config
+     * @param Config $config
      *
      * @return array
      */
-    public function formatConfig(array $config)
+    public function formatConfig(\ArrayAccess $config)
     {
         return array_merge([
+            'http' => $this->config['http'],
             'app_id' => $config['app_id'],
             'app_key' => $config['app_key'],
-        ], $config);
+        ], $config->toArray());
     }
 }

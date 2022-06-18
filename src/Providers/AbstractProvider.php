@@ -1,18 +1,19 @@
 <?php
 
-namespace Yan\Translate\Providers;
+namespace MouYong\Translate\Providers;
 
-use Yan\Translate\Contracts\ProviderInterface;
-use Yan\Translate\Supports\Config;
-use Yan\Translate\Traits\HasHttpRequest;
+use MouYong\Translate\Contracts\ProviderInterface;
+use MouYong\Translate\Supports\Config;
 
 /**
  * Class AbstractProvider.
  */
 abstract class AbstractProvider implements ProviderInterface
 {
-    use HasHttpRequest;
+    const HTTP_URL = '';
 
+    const HTTPS_URL = '';
+    
     /**
      * Provider name.
      *
@@ -28,53 +29,31 @@ abstract class AbstractProvider implements ProviderInterface
     /**
      * The app id.
      *
-     * @var string
+     * @var null|string
      */
     protected $appId;
 
     /**
      * The app key.
      *
-     * @var string
+     * @var null|string
      */
     protected $appKey;
 
     /**
      * AbstractProvider constructor.
      *
-     * @param string $app_id
-     * @param string $app_key
+     * @param null|string $app_id
+     * @param null|string $app_key
      * @param array  $config
      */
-    public function __construct($app_id, $app_key, array $config)
+    public function __construct(?string $app_id, ?string $app_key, array $config = [])
     {
         $this->appId = $app_id;
         $this->appKey = $app_key;
 
         $this->config = new Config($config);
     }
-
-    /**
-     * Get the translate URL for the provider.
-     *
-     * @return string
-     */
-    protected function getTranslateUrl()
-    {
-        return $this->config->get('ssl', false) ? static::HTTPS_URL : static::HTTP_URL;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    abstract public function translate($string, $from = 'zh', $to = 'en');
-
-    /**
-     * @param array $translateResult
-     *
-     * @return array
-     */
-    abstract protected function mapTranslateResult(array $translateResult);
 
     /**
      * @return string
@@ -91,30 +70,27 @@ abstract class AbstractProvider implements ProviderInterface
     }
 
     /**
-     * @param array  $array
-     * @param string $key
-     * @param null   $default
+     * Get the translate URL for the provider.
      *
-     * @return array|mixed|null
+     * @return string
      */
-    protected function arrayItem(array $array, $key, $default = null)
+    protected function getTranslateUrl()
     {
-        if (is_null($key)) {
-            return $array;
+        if ($this->config['url']) {
+            return $this->config['url'];
         }
 
-        if (isset($array[$key])) {
-            return $array[$key];
-        }
-
-        foreach (explode('.', $key) as $segment) {
-            if (!is_array($array) || !array_key_exists($segment, $array)) {
-                return $default;
-            }
-
-            $array = $array[$segment];
-        }
-
-        return $array;
+        return ($this->config['ssl'] ?? false) 
+            ? static::HTTPS_URL
+            : static::HTTP_URL;
     }
+
+    abstract public function translate(string $string, $from = 'zh', $to = 'en');
+
+    /**
+     * @param array $translateResult
+     *
+     * @return array
+     */
+    abstract protected function mapTranslateResult(array $translateResult);
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace Yan\Translate\Contracts;
+namespace MouYong\Translate\Contracts;
 
 /**
  * Interface ProviderInterface.
@@ -16,5 +16,5 @@ interface ProviderInterface
      *
      * @return mixed
      */
-    public function translate($string, $from = 'zh', $to = 'en');
+    public function translate(string $string, $from = 'zh', $to = 'en');
 }
