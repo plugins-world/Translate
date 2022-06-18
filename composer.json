@@ -18,7 +18,7 @@
         "issues": "https://github.com/mouyong/translate/issues"
     },
     "require": {
-        "php": ">=5.5",
+        "php": ">=7.1",
         "zhenmu/support": "^1.0",
         "guzzlehttp/guzzle": "*",
         "stichoza/google-translate-php": "^4.0"

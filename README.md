@@ -7,7 +7,7 @@ Translate
 # Requirement
 
 ```
-PHP >= 5.5
+PHP >= 7.1
 ```
 
 # Installation
