@@ -1,0 +1,39 @@
+{
+    "name": "plugins-world/translate",
+    "description": "An extension package that supports multi platform translation, such as Baidu translation, Google translation, Jinshan translation and Youdao translation",
+    "keywords": ["translate", "content recognizer", "language recognizer", "baidu", "google", "jinshan", "youdao"],
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "mouyong",
+            "email": "my24251325@gmail.com",
+            "homepage": "https://github.com/mouyong",
+            "role": "Creator & Developer"
+        }
+    ],
+    "support": {
+        "source": "https://github.com/plugins-world/translate",
+        "homepage": "https://github.com/plugins-world/translate",
+        "issues": "https://github.com/plugins-world/translate/issues"
+    },
+    "require": {
+        "php": ">=8.0",
+        "guzzlehttp/guzzle": "^7.4.5|^8.0",
+        "stichoza/google-translate-php": "^5.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "*",
+        "mockery/mockery": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Plugins\\Translate\\": "app"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Plugins\\Translate\\Test\\": "tests"
+        }
+    }
+}
